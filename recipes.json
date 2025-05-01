@@ -1,0 +1,59 @@
+[
+	{ "name": "MV Electric Piston",
+		"station": "Crafting Table",
+		"inputs": [
+			{ "name": "Aluminum Plate", "amount": 3 },
+			{ "name": "1x Copper Cable", "amount": 2 },
+			{ "name": "Aluminum Rod", "amount": 2 },
+			{ "name": "Small Aluminum Gear", "amount": 1 },
+			{ "name": "MV Electric Rotor", "amount": 1 }
+		],
+		"outputs": [
+			{ "name": "MV Electric Piston", "amount": 1 }
+		]
+	},
+
+	{ "name": "Aluminum Rod",
+		"station": "Extruder",
+		"inputs": [
+			{ "name": "Aluminum Ingot", "amount": 1 }
+		],
+		"outputs": [
+			{ "name": "Aluminum Rod", "amount": 2 }
+		]
+	},
+
+	{ "name": "Aluminum Plate",
+		"station": "Bender",
+		"inputs": [
+			{ "name": "Aluminum Ingot", "amount": 1 }
+		],
+		"outputs": [
+			{ "name": "Aluminum Plate", "amount": 1 }
+		]
+	},
+
+	{ "name": "Small Aluminum Gear",
+		"station": "Extruder",
+		"inputs": [
+			{ "name": "Aluminum Ingot", "amount": 1 }
+		],
+		"outputs": [
+			{ "name": "Small Aluminum Gear", "amount": 1 }
+		]
+	},
+
+	{ "name": "MV Electric Motor",
+		"station": "Crafting Table",
+		"inputs": [
+			{ "name": "Aluminum Rod", "amount": 2 },
+			{ "name": "2x Cupronickel Wire", "amount": 4 },
+			{ "name": "Magnetic Steel Rod", "amount": 1 },
+			{ "name": "1x Copper Cable", "amount": 2 }
+		],
+		"outputs": [
+			{ "name": "MV Electric Motor", "amount": 1 }
+		]
+	}
+	
+]

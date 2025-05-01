@@ -1,0 +1,11 @@
+[
+	{ "name": "RECIPE_NAME",
+		"station": "STATION_NAME",
+		"inputs": [
+			{ "name": "INPUT_1", "amount": 1 }
+		],
+		"outputs": [
+			{ "name": "OUTPUT_1", "amount": 1 }
+		]
+	}
+]
