@@ -1,10 +1,16 @@
+from __future__ import annotations
 import json
+
+_DEBUG = False
 
 class Ingredient():
     name: str
     amount: int
     
-    def __init__(self, name, amount = 0):
+    def __init__(self, name: str, amount: int = 0):
+        if (not isinstance(amount, int)): raise TypeError(f"Expected int, got {type(amount).__name__}")
+        if (amount < 0): raise ValueError(f"Expected non-negative integer, got {amount}")
+        
         self.name = name
         self.amount = amount
         
@@ -29,20 +35,25 @@ class Recipe():
     inputs: list
     outputs: list
     station: str
+    name: str
     
-    def __init__(self, inputs: list, outputs: list, station: str = "Crafting Table"):
+    def __init__(self, inputs: list, outputs: list, station: str = "Crafting Table", name: str = "None"):
         self.inputs = inputs
         self.outputs = outputs
         self.station = station
+        self.name = name
         
     def __str__(self):
-        s = f"[{self.station}]\nInputs:"
+        s = f"[{self.name} at a {self.station}]\nInputs:"
         for item in self.inputs:
             s += f"\n  - {item}"
         s += "\nOutputs:"
         for item in self.outputs:
             s += f"\n  - {item}"
         return s
+    
+    def __repr__(self):
+        return f"{self.name} recipe"
 
 class Inventory():
     items: dict
@@ -100,17 +111,52 @@ class Inventory():
             s += f"\n  - {i}: {self.items[i].amount}"
         s += "\n  - Empty" if len(self.items) == 0 else ""
         return s
+    
+    def get_missing_ingredients(self, recipe: Recipe) -> Inventory:
+        missing = []
+        # Go through each input in the recipe and check if we have the amount
+        for item in recipe.inputs:
+            if (self.has_amount(item)): continue # We have the amount we need
+            # Check to see if the item even exists
+            elif (self.has_item(item)):
+                # Item exists, we just need more
+                new_amount =  item.amount - self.items[item.name].amount
+                missing.append(Ingredient(item.name, new_amount))
+            else: 
+                # Item does not exist, we need all of it
+                missing.append(Ingredient(item.name, item.amount))
+        return missing
         
-def read_recipes(filename) -> list:
+def load_recipes(filename) -> list:
+    recipes = []
+    
     with open(filename, "r") as file:
-        ...
+        data = json.load(file)
+    
+    for recipe in data:
+        name = recipe["name"]
+        station = recipe["station"]
+        inputs = []
+        outputs = []
+        
+        for input in recipe["inputs"]: inputs.append(Ingredient(input["name"], input["amount"]))
+        for output in recipe["outputs"]: outputs.append(Ingredient(output["name"], output["amount"]))
+        recipes.append(Recipe(inputs, outputs, station, name))
+        if (_DEBUG): print(f"Loaded {name} recipe")
+        
+    return recipes
+    
+    
 
-piston_recipe = Recipe([Ingredient("Wood Plank", 3), Ingredient("Cobblestone", 4), Ingredient("Redstone Dust", 1), Ingredient("Iron Ingot", 1)], [Ingredient("Piston", 1)])
-
+recipes = load_recipes("recipes.json")
 inv = Inventory()
-inv.add(Ingredient("Wood Plank", 3))
-inv.add(Ingredient("Cobblestone", 4))
-inv.add(Ingredient("Redstone Dust", 0))
-inv.add(Ingredient("Iron Ingot", 1))
+inv.add(Ingredient("Aluminum Plate", 2))
+inv.add(Ingredient("1x Copper Cable", 1))
+inv.add(Ingredient("Aluminum Rod", 1))
+inv.add(Ingredient("Small Aluminum Gear", 0))
+inv.add(Ingredient("MV Electric Motor", 0))
 
-print(inv.can_craft(piston_recipe))
+rec = recipes[0]
+missing = inv.get_missing_ingredients(rec)
+for item in missing:
+    print(item)

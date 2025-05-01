@@ -6,7 +6,7 @@
 			{ "name": "1x Copper Cable", "amount": 2 },
 			{ "name": "Aluminum Rod", "amount": 2 },
 			{ "name": "Small Aluminum Gear", "amount": 1 },
-			{ "name": "MV Electric Rotor", "amount": 1 }
+			{ "name": "MV Electric Motor", "amount": 1 }
 		],
 		"outputs": [
 			{ "name": "MV Electric Piston", "amount": 1 }
