@@ -145,6 +145,11 @@ class Inventory():
             
             for rec in missing_recipes_fix:
                 self.craft_recipe(rec, recipe_list, level + 1)
+                
+            for base in base_ingredients:
+                self.add(base)
+        
+        # if (not self.can_craft(recipe)): self.craft_recipe(recipe, recipe_list, level)
  
 def load_recipes(filename) -> list:
     recipes = []
@@ -197,7 +202,7 @@ def get_recipe(item, recipe_list: list) -> Recipe:
     
 
 recipes = load_recipes("recipes.json")
-recipe = recipes[8]
+recipe = recipes[0]
 inv = Inventory()
 
 
