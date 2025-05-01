@@ -20,7 +20,7 @@ class Ingredient():
         if (not isinstance(other, Ingredient)): return NotImplemented
         elif (self.name != other.name): raise ValueError(f"Cannot add Ingredients of diffent types, {self.name} and {other.name}")
         return Ingredient(self.name, self.amount + other.amount)
-    def __mult__(self, other):
+    def __mul__(self, other):
         if (not isinstance(other, int)): return NotImplemented
         elif (other < 0): raise ValueError(f"Expected non-negative integer, got {other}")
         return Ingredient(self.name, self.amount * other)
@@ -126,7 +126,10 @@ class Inventory():
                 # Item does not exist, we need all of it
                 missing.append(Ingredient(item.name, item.amount))
         return missing
-        
+    
+    def craft_recipe(self, recipe: Recipe, recipe_list: list) -> bool:
+        ...
+ 
 def load_recipes(filename) -> list:
     recipes = []
     
@@ -145,18 +148,43 @@ def load_recipes(filename) -> list:
         if (_DEBUG): print(f"Loaded {name} recipe")
         
     return recipes
+
+def is_base(item, recipe_list: list):
+    if (isinstance(item, Ingredient)): name = item.name
+    elif (isinstance(item, str)): name = item
+    else: raise TypeError(f"Expected Ingredient or str for item, got {type(item).__name__}")
     
+    for recipe in recipe_list:
+        for output_item in recipe.outputs:
+            if (name == output_item.name): return False
+    return True
+
+def get_all_base_ingredients(recipe_list: list):
+    all_inputs = []
+    for recipe in recipe_list:
+        all_inputs.extend(recipe.inputs)
+        
+    bases = list(set([item.name for item in all_inputs if is_base(item, recipe_list)]))
+    return bases
+
+def get_recipe(item, recipe_list: list) -> Recipe:
+    if (isinstance(item, Ingredient)): name = item.name
+    elif (isinstance(item, str)): name = item
+    else: raise TypeError(f"Expected Ingredient or str, got {type(item).__name__}")
+    
+    # Loop until we find a recipe with the item as an output
+    for recipe in recipe_list:
+        if (name in [output.name for output in recipe.outputs]):
+            return recipe
+    return None
+
     
 
 recipes = load_recipes("recipes.json")
+recipe = recipes[0]
 inv = Inventory()
-inv.add(Ingredient("Aluminum Plate", 2))
-inv.add(Ingredient("1x Copper Cable", 1))
-inv.add(Ingredient("Aluminum Rod", 1))
-inv.add(Ingredient("Small Aluminum Gear", 0))
-inv.add(Ingredient("MV Electric Motor", 0))
 
-rec = recipes[0]
-missing = inv.get_missing_ingredients(rec)
-for item in missing:
-    print(item)
+
+print(f"Crafting {recipe.name}")
+inv.craft_recipe(recipes[0], recipes)
+print(inv)
