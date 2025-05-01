@@ -127,8 +127,24 @@ class Inventory():
                 missing.append(Ingredient(item.name, item.amount))
         return missing
     
-    def craft_recipe(self, recipe: Recipe, recipe_list: list) -> bool:
-        ...
+    def craft_recipe(self, recipe: Recipe, recipe_list: list, level = 0) -> bool:
+        tabs = "\t" * (level + 1)
+        
+        print(f"{tabs}Crafting {recipe.name}")
+        if (self.can_craft(recipe)): 
+            print(f"{tabs}We can craft {recipe.name}")
+            return True
+        else:
+            missing = self.get_missing_ingredients(recipe)
+            missing_recipes = [get_recipe(item.name, recipe_list) for item in missing]
+            missing_recipes_fix = [rec for rec in missing_recipes if rec != None]
+            base_ingredients = [item for item in missing if is_base(item, recipe_list)]
+            print(f"{tabs}Cannot craft {recipe.name}, missing {missing}")
+            print(f"{tabs}Need to use these recipes: {missing_recipes_fix}\n" if len(missing_recipes_fix) != 0 else "", end = "")
+            print(f"{tabs}Current base materials needed: {base_ingredients}\n" if len(base_ingredients) != 0 else "", end = "")
+            
+            for rec in missing_recipes_fix:
+                self.craft_recipe(rec, recipe_list, level + 1)
  
 def load_recipes(filename) -> list:
     recipes = []
@@ -181,10 +197,12 @@ def get_recipe(item, recipe_list: list) -> Recipe:
     
 
 recipes = load_recipes("recipes.json")
-recipe = recipes[0]
+recipe = recipes[8]
 inv = Inventory()
 
 
-print(f"Crafting {recipe.name}")
-inv.craft_recipe(recipes[0], recipes)
+print(f"Starting crafting for {recipe.name}")
+print(f"This requires {recipe.inputs} to make {recipe.outputs}")
+inv.craft_recipe(recipe, recipes)
+print(f"\nFinal inventory:")
 print(inv)
