@@ -199,15 +199,25 @@ def get_recipe(item, recipe_list: list) -> Recipe:
             return recipe
     return None
 
+def craft(recipe, main_inv, side_inv, level = 0):
+    tabs = "\t" * (level + 1)
+    print(f"{tabs}Starting crafting for {recipe.name}")
+    print(f"Checking if we can craft {recipe.name}")
     
+    
+
+
 
 recipes = load_recipes("recipes.json")
 recipe = recipes[0]
 inv = Inventory()
+inv2 = Inventory()
 
+print(f"Main product: {recipe.name}")
+craft(recipe, inv, inv2)
 
-print(f"Starting crafting for {recipe.name}")
+"""print(f"Starting crafting for {recipe.name}")
 print(f"This requires {recipe.inputs} to make {recipe.outputs}")
 inv.craft_recipe(recipe, recipes)
 print(f"\nFinal inventory:")
-print(inv)
+print(inv)"""
