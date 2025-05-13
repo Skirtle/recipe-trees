@@ -199,10 +199,17 @@ def get_recipe(item, recipe_list: list) -> Recipe:
             return recipe
     return None
 
+def take_needed_ingredients(requesting_inv: Inventory, host_inv: Inventory, recipe: Recipe):
+    # Look at the recipe and move all items
+    ...
+
 def craft(recipe, main_inv, side_inv, level = 0):
     tabs = "\t" * (level + 1)
     print(f"{tabs}Starting crafting for {recipe.name}")
     print(f"Checking if we can craft {recipe.name}")
+    
+    
+    
     
     
 
