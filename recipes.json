@@ -1,32 +1,54 @@
 [
-	{ "name": "Wooden Pickaxe",
+	{ "name": "Redstone Comparator",
 		"stations": ["Crafting Table"],
 		"inputs": [
-			{ "name": "Wooden Plank", "amount": 3 },
-			{ "name": "Stick", "amount": 2 }
+			{ "name": "Redstone Torch", "tags": null, "amount": 3 },
+			{ "name": "Nether Quartz", "tags": null, "amount": 1 },
+			{ "name": "Stone", "tags": null, "amount": 3 }
 		],
 		"outputs": [
-			{ "name": "Wooden Pickaxe", "amount": 1 }
+			{ "name": "Redstone Comparator", "amount": 1 }
 		]
 	},
 
-	{ "name": "Oak Planks",
+	{ "name": "Redstone Torch",
 		"stations": ["Crafting Table", "Hand"],
 		"inputs": [
-			{ "name": "Oak Log", "amount": 1 }
+			{ "name": "Stick", "tags": null, "amount": 1 },
+			{ "name": "Redstone Dust", "tags": null, "amount": 1 }
 		],
 		"outputs": [
-			{ "name": "Oak Planks", "amount": 4 }
+			{ "name": "Redstone Torch", "amount": 1 }
 		]
 	},
 
 	{ "name": "Stick",
 		"stations": ["Crafting Table", "Hand"],
 		"inputs": [
-			{ "name": "Oak Planks", "amount": 2 }
+			{ "name": null, "tags": "planks", "amount": 2 }
 		],
 		"outputs": [
-			{ "name": "Sticks", "amount": 4 }
+			{ "name": "Stick", "amount": 4 }
+		]
+	},
+
+	{ "name": "Oak Planks",
+		"stations": ["Crafting Table", "Hand"],
+		"inputs": [
+			{ "name": "Oak Log", "tags": null, "amount": 1 }
+		],
+		"outputs": [
+			{ "name": "Oak Planks", "amount": 4 }
+		]
+	},
+
+	{ "name": "Stone",
+		"stations": ["Furnace"],
+		"inputs": [
+			{ "name": "Cobblestone", "tags": null, "amount": 1 }
+		],
+		"outputs": [
+			{ "name": "Stone", "amount": 1 }
 		]
 	}
 ]
