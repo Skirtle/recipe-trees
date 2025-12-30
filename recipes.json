@@ -1,110 +1,32 @@
 [
-	{ "name": "MV Electric Piston",
-		"station": "Crafting Table",
+	{ "name": "Wooden Pickaxe",
+		"stations": ["Crafting Table"],
 		"inputs": [
-			{ "name": "Aluminum Plate", "amount": 3 },
-			{ "name": "1x Copper Cable", "amount": 2 },
-			{ "name": "Aluminum Rod", "amount": 2 },
-			{ "name": "Small Aluminum Gear", "amount": 1 },
-			{ "name": "MV Electric Motor", "amount": 1 }
+			{ "name": "Wooden Plank", "amount": 3 },
+			{ "name": "Stick", "amount": 2 }
 		],
 		"outputs": [
-			{ "name": "MV Electric Piston", "amount": 1 }
+			{ "name": "Wooden Pickaxe", "amount": 1 }
 		]
 	},
 
-	{ "name": "Aluminum Rod",
-		"station": "Extruder",
+	{ "name": "Oak Planks",
+		"stations": ["Crafting Table", "Hand"],
 		"inputs": [
-			{ "name": "Aluminum Ingot", "amount": 1 }
+			{ "name": "Oak Log", "amount": 1 }
 		],
 		"outputs": [
-			{ "name": "Aluminum Rod", "amount": 2 }
+			{ "name": "Oak Planks", "amount": 4 }
 		]
 	},
 
-	{ "name": "Aluminum Plate",
-		"station": "Bender",
+	{ "name": "Stick",
+		"stations": ["Crafting Table", "Hand"],
 		"inputs": [
-			{ "name": "Aluminum Ingot", "amount": 1 }
+			{ "name": "Oak Planks", "amount": 2 }
 		],
 		"outputs": [
-			{ "name": "Aluminum Plate", "amount": 1 }
-		]
-	},
-
-	{ "name": "Small Aluminum Gear",
-		"station": "Extruder",
-		"inputs": [
-			{ "name": "Aluminum Ingot", "amount": 1 }
-		],
-		"outputs": [
-			{ "name": "Small Aluminum Gear", "amount": 1 }
-		]
-	},
-
-	{ "name": "MV Electric Motor",
-		"station": "Crafting Table",
-		"inputs": [
-			{ "name": "Aluminum Rod", "amount": 2 },
-			{ "name": "2x Cupronickel Wire", "amount": 4 },
-			{ "name": "Magnetic Steel Rod", "amount": 1 },
-			{ "name": "1x Copper Cable", "amount": 2 }
-		],
-		"outputs": [
-			{ "name": "MV Electric Motor", "amount": 1 }
-		]
-	},
-
-	{ "name": "Magnetic Steel Rod",
-		"station": "Extruder",
-		"inputs": [
-			{ "name": "Magnetic Steel Ingot", "amount": 1 }
-		],
-		"outputs": [
-			{ "name": "Magnetic Steel Rod", "amount": 2 }
-		]
-	},
-
-	{ "name": "Magnetic Steel Ingot",
-		"station": "Polarizer",
-		"inputs": [
-			{ "name": "Steel Ingot", "amount": 1 }
-		],
-		"outputs": [
-			{ "name": "Magnetic Steel Ingot", "amount": 1 }
-		]
-	},
-
-	{ "name": "2x Cupronickel Wire",
-		"station": "Wiremill",
-		"inputs": [
-			{ "name": "Cupronickel Ingot", "amount": 1 }
-		],
-		"outputs": [
-			{ "name": "2x Cupronickel Wire", "amount": 1 }
-		]
-	},
-
-	{ "name": "1x Copper Cable",
-		"station": "Assembler",
-		"inputs": [
-			{ "name": "1x Copper Wire", "amount": 1 },
-			{ "name": "Rubber Ingot", "amount": 1 }
-		],
-		"outputs": [
-			{ "name": "1x Copper Cable", "amount": 1 }
-		]
-	},
-
-	{ "name": "1x Copper Wire",
-		"station": "Wiremill",
-		"inputs": [
-			{ "name": "Copper Ingot", "amount": 1 }
-		],
-		"outputs": [
-			{ "name": "1x Copper Wire", "amount": 2 }
+			{ "name": "Sticks", "amount": 4 }
 		]
 	}
-	
 ]

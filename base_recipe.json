@@ -1,6 +1,6 @@
 [
 	{ "name": "RECIPE_NAME",
-		"station": "STATION_NAME",
+		"stations": "STATION_NAME",
 		"inputs": [
 			{ "name": "INPUT_1", "amount": 1 }
 		],
