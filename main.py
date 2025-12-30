@@ -1,10 +1,6 @@
-import json
+from json import load as load_json
 from dataclasses import dataclass, field
-from typing import Optional, Any
-
-default_tags = {
-    
-}
+from typing import Optional
 
 @dataclass
 class Ingredient:
@@ -146,7 +142,7 @@ def load_recipes(filename: str) -> tuple[list[Recipe], list[str]]:
     all_ingredients: list[Ingredient] = []
     
     with open(filename, "r") as file:
-        recipe_list = json.load(file)
+        recipe_list = load_json(file)
     
     # Turn recipes into Recipe class
     for recipe in recipe_list:
@@ -167,32 +163,15 @@ def load_recipes(filename: str) -> tuple[list[Recipe], list[str]]:
 
 def load_tags(filename: str) -> dict[str, list[str]]:
     with open(filename, "r") as file:
-        return json.load(file)
-
-def get_items_to_craft(item_to_craft: str, recipes: list[Recipe], base_ingredients, tags) -> list:
-    curr_recipe: Recipe
-    for recipe in recipes:
-        if (recipe.name == item_to_craft): 
-            curr_recipe = recipe
-            break
-    else: raise ValueError(f"Item '{item_to_craft}' not found")
-
-    print(f"Found item '{item_to_craft}'")
-    print(curr_recipe)
-    
-    return []
-
-    
+        return load_json(file)
 
 if __name__ == "__main__":
-    inv1 = Inventory([Ingredient(5, "Wood")])
-    inv1 += Inventory([Ingredient(100, "Wood"), Ingredient(100, "Stone"), Ingredient(100, "Wool")])
-    print(inv1)
+    recipes,base_ingredients = load_recipes("recipes.json")
+    tags = load_tags("tags.json")
     
-    exit()
-    recipe_filename = "recipes.json"
-    tags_filename = "tags.json"
+    for rec in recipes: print(rec)
+    print(f"{base_ingredients = }")
     
-    recipes,base_ingredients = load_recipes(recipe_filename)
-    tags = load_tags(tags_filename)
-    print(get_items_to_craft("Redstone Comparator", recipes, base_ingredients, tags))
+    print("tags: {")
+    for tag in tags: print(f"\t{tag}: {tags[tag]}")
+    print("}")
