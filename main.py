@@ -1,5 +1,5 @@
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional, Any
 
 default_tags = {
@@ -14,6 +14,8 @@ class Ingredient:
     screen_name: str = ""
     
     def __post_init__(self) -> None:
+        if (self.amount <= 0): raise ValueError("Cannot have negative ingredients")
+        
         if (self.name != None): 
             self.item_or_tag = "item"
             self.screen_name = self.name
@@ -33,6 +35,25 @@ class Ingredient:
         if (self.item_or_tag == "item"): s += f" {self.name}"
         else: s += f" {self.tags}"
         return s
+    
+    def __add__(self, other: "Ingredient") -> "Ingredient":
+        if (not isinstance(other, Ingredient)): raise TypeError(f"Cannot add {type(self)} and {type(other)}")
+        
+        self_tags = self.tags or []
+        other_tags = other.tags or []
+        if (self.name != other.name or self_tags !=other_tags): raise ValueError(f"Cannot add generic tags and specific items")
+        
+        return Ingredient(self.amount + other.amount, self.name, self.tags)
+    
+    def __iadd__(self, other: "Ingredient") -> "Ingredient":
+        if (not isinstance(other, Ingredient)): raise TypeError(f"Cannot add {type(self)} and {type(other)}")
+        
+        self_tags = self.tags or []
+        other_tags = other.tags or []
+        if (self.name != other.name or self_tags !=other_tags): raise ValueError(f"Cannot add generic tags and specific items")
+        
+        self.amount += other.amount
+        return self
     
 @dataclass
 class Result:
@@ -74,6 +95,52 @@ class Recipe:
         
         return s
 
+@dataclass
+class Inventory:
+    items: list[Ingredient] = field(default_factory = list)
+    
+    
+    def __str__(self) -> str: return self.items.__str__()
+    
+    def __add__(self, other: "Inventory | Ingredient") -> "Inventory":
+        new_inventory = Inventory([i for i in self.items])
+        
+        # Add two inventories of Ingredients
+        if (isinstance(other, Inventory)):
+            for ing in other.items:
+                new_inventory.add_ingredient(ing)
+            return new_inventory
+        
+        # Add one ingredient to inventory
+        elif (isinstance(other, Ingredient)):
+            new_inventory.add_ingredient(other)
+            return new_inventory
+        
+        raise ValueError(f"Cannot add {type(other).__name__} to Inventory")
+    
+    def __iadd__(self, other: "Inventory | Ingredient") -> "Inventory":
+        # Add two inventories of Ingredients
+        if (isinstance(other, Inventory)):
+            for ing in other.items:
+                self.add_ingredient(ing)
+            return self
+        
+        # Add one ingredient to inventory
+        elif (isinstance(other, Ingredient)):
+            self.add_ingredient(other)
+            return self
+        
+        raise ValueError(f"Cannot add {type(other).__name__} to Inventory")
+    
+    def add_ingredient(self, new_item: Ingredient) -> None:
+        for item in self.items:
+            try:
+                item += new_item
+                return
+            except ValueError: continue
+        
+        self.items.append(new_item)
+
 def load_recipes(filename: str) -> tuple[list[Recipe], list[str]]:
     converted_recipes: list[Recipe] = []
     all_ingredients: list[Ingredient] = []
@@ -93,22 +160,39 @@ def load_recipes(filename: str) -> tuple[list[Recipe], list[str]]:
     base_ingredients: list[str] = []
     recipe_strs = [i.name for i in converted_recipes]
     for ing in all_ingredients:
-        if ing.name not in recipe_strs and ing.item_or_tag != "tag": base_ingredients.append(ing.screen_name)
+        if (ing.name not in recipe_strs and ing.item_or_tag != "tag"): 
+            base_ingredients.append(ing.screen_name)
         
     return (converted_recipes, base_ingredients)
 
 def load_tags(filename: str) -> dict[str, list[str]]:
     with open(filename, "r") as file:
         return json.load(file)
+
+def get_items_to_craft(item_to_craft: str, recipes: list[Recipe], base_ingredients, tags) -> list:
+    curr_recipe: Recipe
+    for recipe in recipes:
+        if (recipe.name == item_to_craft): 
+            curr_recipe = recipe
+            break
+    else: raise ValueError(f"Item '{item_to_craft}' not found")
+
+    print(f"Found item '{item_to_craft}'")
+    print(curr_recipe)
     
+    return []
+
+    
+
 if __name__ == "__main__":
+    inv1 = Inventory([Ingredient(5, "Wood")])
+    inv1 += Inventory([Ingredient(100, "Wood"), Ingredient(100, "Stone"), Ingredient(100, "Wool")])
+    print(inv1)
+    
+    exit()
     recipe_filename = "recipes.json"
     tags_filename = "tags.json"
     
     recipes,base_ingredients = load_recipes(recipe_filename)
     tags = load_tags(tags_filename)
-    
-    for recipe in recipes:
-        print(recipe)
-        
-    print(f"Base ingredients: {base_ingredients}")
+    print(get_items_to_craft("Redstone Comparator", recipes, base_ingredients, tags))
