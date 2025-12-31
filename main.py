@@ -1,6 +1,5 @@
 from json import load as load_json
 from dataclasses import dataclass, field
-from typing import Optional
 
 @dataclass
 class Ingredient:
@@ -112,18 +111,24 @@ class Inventory:
         self.items.append(new_item)
 
     def __contains__(self, item: Ingredient) -> bool:
-        if (not isinstance(item, Ingredient)): raise TypeError(f"Cannot check an inventory for class {type(item).__name__}")
+        # Returns True if the Inventory has the item and greater than or equal to the amount in Item
+        if (not isinstance(item, Ingredient)): raise NotImplementedError(f"Cannot check an inventory for class {type(item).__name__}")
         
-        
-        # Add logic later
+        for curr_item in self.items:
+            if (curr_item.name == item.name and curr_item.amount >= item.amount): return True
         return False
 
     def __mul__(self, other: int) -> "Inventory":
         new_inventory = Inventory()
         for item in self.items:
-            new_inventory.items.append(Ingredient(item.amount * other, item.name, item.tags))
+            new_inventory.items.append(Ingredient(item.amount * other, item.name))
         
         return new_inventory
+    
+    def check_for_item_by_name(self, item_name: str) -> int:
+        for item in self.items:
+            if (item.name == item_name): return item.amount
+        return 0 # We did not have any of that item
     
 def load_recipes(filename: str) -> tuple[list[Recipe], list[str]]:
     converted_recipes: list[Recipe] = []
@@ -135,7 +140,8 @@ def load_recipes(filename: str) -> tuple[list[Recipe], list[str]]:
     # Turn recipes into Recipe class
     for recipe in recipe_list:
         new_ingredients = [Ingredient(item["amount"], item["name"]) for item in recipe["inputs"]]
-        for ingredient in new_ingredients: all_ingredients.append(ingredient)
+        for ingredient in new_ingredients: 
+            all_ingredients.append(ingredient)
         new_results = [Result(item["name"], item["amount"]) for item in recipe["outputs"]]
         new_recipe = Recipe(recipe["name"], recipe["stations"], new_ingredients, new_results)
         converted_recipes.append(new_recipe)
@@ -156,15 +162,21 @@ def get_base_ingredients_for_item(item_to_craft: Recipe, cookbook: list[Recipe],
     
     for ingredient in item_to_craft.inputs:
         print(f"{'\t' * (layer + 1)}* Need {ingredient}", end = "")
-        # First, check the extra inventory for the item. If we have it, we can add it to the final inventory and continue
+        # First, check the extra inventory for the item
+        # If we have the items, remove as many as we can and put them into the final_inventory
+        # If we need more still, ...
         
-        if (ingredient.name in base_ingredients): 
+        
+        if (ingredient in extra_inventory): 
             print(f"")
         else: 
             print(f"")
             
     
     return final_inventory, extra_inventory
+
+
+
 
 if __name__ == "__main__":
     recipes, base_ingredients = load_recipes("recipes.json")
