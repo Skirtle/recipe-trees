@@ -5,48 +5,24 @@ from typing import Optional
 @dataclass
 class Ingredient:
     amount: int
-    name: Optional[str] = None
-    tags: Optional[list[str]] = None
-    screen_name: str = ""
+    name: str
     
     def __post_init__(self) -> None:
         if (self.amount <= 0): raise ValueError("Cannot have negative ingredients")
-        
-        if (self.name != None): 
-            self.item_or_tag = "item"
-            self.screen_name = self.name
-        elif (self.tags != None): 
-            self.item_or_tag = "tag"
-            self.screen_name = f"any {self.tags}"
-        
     
     def __str__(self) -> str:
-        s = f"x{self.amount}"
-        if (self.item_or_tag == "item"): s += f" {self.name}"
-        else: s += f" '{self.tags}' item"
-        return s
+        return f"x{self.amount} {self.name}"
     
     def __repr__(self) -> str:
-        s = f"x{self.amount}"
-        if (self.item_or_tag == "item"): s += f" {self.name}"
-        else: s += f" {self.tags}"
-        return s
-    
+        return f"x{self.amount} {self.name}"
+        
     def __add__(self, other: "Ingredient") -> "Ingredient":
         if (not isinstance(other, Ingredient)): raise TypeError(f"Cannot add {type(self)} and {type(other)}")
         
-        self_tags = self.tags or []
-        other_tags = other.tags or []
-        if (self.name != other.name or self_tags !=other_tags): raise ValueError(f"Cannot add generic tags and specific items")
-        
-        return Ingredient(self.amount + other.amount, self.name, self.tags)
+        return Ingredient(self.amount + other.amount, self.name)
     
     def __iadd__(self, other: "Ingredient") -> "Ingredient":
         if (not isinstance(other, Ingredient)): raise TypeError(f"Cannot add {type(self)} and {type(other)}")
-        
-        self_tags = self.tags or []
-        other_tags = other.tags or []
-        if (self.name != other.name or self_tags !=other_tags): raise ValueError(f"Cannot add generic tags and specific items")
         
         self.amount += other.amount
         return self
@@ -69,9 +45,7 @@ class Recipe:
     
     def __post_init__(self) -> None:
         for ingredient in self.inputs:
-            if (ingredient.name == None and ingredient.tags == None): raise ValueError(f"Ingredient {ingredient} needs either a name or tags, but was given neither")
-            elif (ingredient.name != None and ingredient.tags != None): raise ValueError(f"Ingredient {ingredient} needs either a name or tags, but was given both")
-            elif (ingredient.amount < 1): raise ValueError(f"Ingredient amount must be positive, but was given {ingredient.amount}")
+            if (ingredient.amount < 1): raise ValueError(f"Ingredient amount must be positive, but was given {ingredient.amount}")
             
     def __str__(self) -> str:
         s = f"Recipe: {self.name}\n\tCrafted in: "
@@ -137,6 +111,20 @@ class Inventory:
         
         self.items.append(new_item)
 
+    def __contains__(self, item: Ingredient) -> bool:
+        if (not isinstance(item, Ingredient)): raise TypeError(f"Cannot check an inventory for class {type(item).__name__}")
+        
+        
+        # Add logic later
+        return False
+
+    def __mul__(self, other: int) -> "Inventory":
+        new_inventory = Inventory()
+        for item in self.items:
+            new_inventory.items.append(Ingredient(item.amount * other, item.name, item.tags))
+        
+        return new_inventory
+    
 def load_recipes(filename: str) -> tuple[list[Recipe], list[str]]:
     converted_recipes: list[Recipe] = []
     all_ingredients: list[Ingredient] = []
@@ -146,7 +134,7 @@ def load_recipes(filename: str) -> tuple[list[Recipe], list[str]]:
     
     # Turn recipes into Recipe class
     for recipe in recipe_list:
-        new_ingredients = [Ingredient(item["amount"], item["name"], item["tags"]) for item in recipe["inputs"]]
+        new_ingredients = [Ingredient(item["amount"], item["name"]) for item in recipe["inputs"]]
         for ingredient in new_ingredients: all_ingredients.append(ingredient)
         new_results = [Result(item["name"], item["amount"]) for item in recipe["outputs"]]
         new_recipe = Recipe(recipe["name"], recipe["stations"], new_ingredients, new_results)
@@ -156,22 +144,33 @@ def load_recipes(filename: str) -> tuple[list[Recipe], list[str]]:
     base_ingredients: list[str] = []
     recipe_strs = [i.name for i in converted_recipes]
     for ing in all_ingredients:
-        if (ing.name not in recipe_strs and ing.item_or_tag != "tag"): 
-            base_ingredients.append(ing.screen_name)
+        if (ing.name not in recipe_strs): 
+            base_ingredients.append(ing.name)
         
     return (converted_recipes, base_ingredients)
 
-def load_tags(filename: str) -> dict[str, list[str]]:
-    with open(filename, "r") as file:
-        return load_json(file)
+def get_base_ingredients_for_item(item_to_craft: Recipe, cookbook: list[Recipe], base_ingredients: list[str], layer: int = 0) -> tuple[Inventory, Inventory]:
+    final_inventory = Inventory()
+    extra_inventory = Inventory()
+    if (layer == 0): print(f"{'\t' * (layer)}* Crafting {item_to_craft.name} ({layer = })")
+    
+    for ingredient in item_to_craft.inputs:
+        print(f"{'\t' * (layer + 1)}* Need {ingredient}", end = "")
+        # First, check the extra inventory for the item. If we have it, we can add it to the final inventory and continue
+        
+        if (ingredient.name in base_ingredients): 
+            print(f"")
+        else: 
+            print(f"")
+            
+    
+    return final_inventory, extra_inventory
 
 if __name__ == "__main__":
-    recipes,base_ingredients = load_recipes("recipes.json")
-    tags = load_tags("tags.json")
+    recipes, base_ingredients = load_recipes("recipes.json")
+    print(f"Base ingredients: {base_ingredients}")
     
-    for rec in recipes: print(rec)
-    print(f"{base_ingredients = }")
-    
-    print("tags: {")
-    for tag in tags: print(f"\t{tag}: {tags[tag]}")
-    print("}")
+    ings, extras = get_base_ingredients_for_item(recipes[0], recipes, base_ingredients)
+    print(f"\nCrafting completed")
+    print(f"Items needed: {ings}")
+    print(f"Leftover ingredients: {extras}")
