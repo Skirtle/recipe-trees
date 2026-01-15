@@ -1,0 +1,29 @@
+[
+    { 
+        "Weak Red Steel": [
+            { "Rose Gold": [10, 15] },
+            { "Steel": [20, 25] },
+            { "Black Steel": [50, 55] },
+            { "Brass": [10, 15] } ]
+    },
+
+    {
+        "Brass": [
+            { "Copper": [70, 80] },
+            { "Zinc": [20, 30] } ]
+    },
+
+    {
+        "Rose Gold": [
+            { "Copper": [15, 30] },
+            { "Gold": [70, 85] } ]
+    },
+
+    {
+        "Weak Steel": [
+            { "Nickel": [15, 25] },
+            { "Steel": [50, 70] },
+            { "Black Bronze": [15, 25] }
+        ]
+    }
+]
